@@ -9,17 +9,12 @@ And followed excellent instructions from [Pete's soapbox](http://blog.ylett.com/
 
 Especially this...
 
-_4. Fix the hardware identifier_
-
-_This is the bit that took a while to figure out._
-
-_For reference, the serial number on my TFT LCD is: QR4 5265S01 G3/2 TP28017._
-
-_Locate line 60:  uint16_t identifier = tft.readID();_
-
-_Change it to:  uint16_t identifier = 0x9341;_
-
-_Or, equivalently, change line 84 to: tft.begin(0x9341);_
+_Fix the hardware identifier_
+1. _This is the bit that took a while to figure out._
+2. _For reference, the serial number on my TFT LCD is: QR4 5265S01 G3/2 TP28017._
+3. _Locate line 60:  uint16_t identifier = tft.readID();_
+4. _Change it to:  uint16_t identifier = 0x9341;_
+5. _Or, equivalently, change line 84 to: tft.begin(0x9341);_
 
 
 
