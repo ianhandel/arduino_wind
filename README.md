@@ -9,14 +9,19 @@ And followed excellent instructions from [Pete's soapbox](http://blog.ylett.com/
 
 Especially this...
 
-4. Fix the hardware identifier
+_4. Fix the hardware identifier_
 
-This is the bit that took a while to figure out.
+_This is the bit that took a while to figure out._
 
-For reference, the serial number on my TFT LCD is: QR4 5265S01 G3/2 TP28017.
-It seems that the readID() function in the Adafruit library does not work with this particular hardware.
-In the example graphicstest program, Locate line 60:  uint16_t identifier = tft.readID();
-Change it to:  uint16_t identifier = 0x9341;
-Or, equivalently, change line 84 to: tft.begin(0x9341);
+_For reference, the serial number on my TFT LCD is: QR4 5265S01 G3/2 TP28017._
+
+_Locate line 60:  uint16_t identifier = tft.readID();_
+
+_Change it to:  uint16_t identifier = 0x9341;_
+
+_Or, equivalently, change line 84 to: tft.begin(0x9341);_
+
+
+
 
 
