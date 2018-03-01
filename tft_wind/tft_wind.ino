@@ -1,5 +1,26 @@
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_TFTLCD.h> // Hardware-specific library
+#include <TouchScreen.h>
+
+
+// TOUCHSCREEN STUFF from TFT-LCD paint sketch
+#define TS_MINX 150
+#define TS_MINY 120
+#define TS_MAXX 920
+#define TS_MAXY 940
+
+#define MINPRESSURE 10
+#define MAXPRESSURE 1000
+
+#define YP A3  // must be an analog pin, use "An" notation!
+#define XM A2  // must be an analog pin, use "An" notation!
+#define YM 9   // can be a digital pin
+#define XP 8   // can be a digital pin
+
+// For better pressure precision, we need to know the resistance
+// between X+ and X- Use any multimeter to read it
+// For the one we're using, its 300 ohms across the X plate
+TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
 // The control pins for the LCD can be assigned to any digital or
 // analog pins...but we'll use the analog pins as this allows us to
@@ -22,41 +43,40 @@
 #define WHITE   0xFFFF
 
 Adafruit_TFTLCD tft(LCD_CS, LCD_CD, LCD_WR, LCD_RD, LCD_RESET);
-// If using the shield, all control and data lines are fixed, and
-// a simpler declaration can optionally be used:
-// Adafruit_TFTLCD tft;
+
 
 void setup(void) {
   tft.reset();
-
-  //uint16_t identifier = tft.readID();
   uint16_t identifier = 0x9341;
 
   tft.begin(identifier);
   tft.fillScreen(BLACK);
+  Serial.begin(9600);
 }
 
 void loop(void) {
+
+  // Write something
   text();
+
+  // Read screen
+  TSPoint p = ts.getPoint();
+   if (p.z > MINPRESSURE) {
+    Serial.print("X = "); Serial.print(p.x);
+    Serial.print("\tY = "); Serial.print(p.y);
+    Serial.print("\tPressure = "); Serial.println(p.z);
+    }
+
+  // if sharing pins, you'll need to fix the directions of the touchscreen pins
+  pinMode(XM, OUTPUT);
+  pinMode(YP, OUTPUT);
 }
 
 void text() {
-  for (uint8_t i=0; i<4; i++) {
-    tft.fillScreen(BLACK);
-
-    tft.setCursor(0, 30);
-    tft.setTextColor(RED);
-    tft.setTextSize(1);
-    tft.println("Hello World!");
-    tft.setTextColor(YELLOW);
-    tft.setTextSize(2);
-    tft.println("Hello World!");
-    tft.setTextColor(GREEN);
-    tft.setTextSize(3);
-    tft.println("Hello World!");
-    tft.setTextColor(BLUE);
-    tft.setTextSize(4);
-    tft.print(1234.567);
-  }
+  tft.fillScreen(BLACK);
+  tft.setCursor(0, 30);
+  tft.setTextColor(YELLOW);
+  tft.setTextSize(5);
+  tft.println("Hello\nWorld!");
 }
 
