@@ -1,6 +1,7 @@
 #include <Adafruit_GFX.h>    // Core graphics library
 #include <Adafruit_TFTLCD.h> // Hardware-specific library
 #include <TouchScreen.h>
+#include <Fonts/FreeMonoBold24pt7b.h>
 
 
 // TOUCHSCREEN STUFF from TFT-LCD paint sketch
@@ -44,6 +45,7 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
 Adafruit_TFTLCD tft(LCD_CS, LCD_CD, LCD_WR, LCD_RD, LCD_RESET);
 
+long wind = 0;
 
 void setup(void) {
   tft.reset();
@@ -51,13 +53,16 @@ void setup(void) {
 
   tft.begin(identifier);
   tft.fillScreen(BLACK);
+  tft.setRotation(1);
   Serial.begin(9600);
 }
 
 void loop(void) {
 
   // Write something
-  text();
+  wind = random(0, 99);
+  text(wind);
+  delay(250);
 
   // Read screen
   TSPoint p = ts.getPoint();
@@ -72,11 +77,12 @@ void loop(void) {
   pinMode(YP, OUTPUT);
 }
 
-void text() {
+void text(long wind) {
   tft.fillScreen(BLACK);
-  tft.setCursor(0, 30);
-  tft.setTextColor(YELLOW);
+  tft.setCursor(20, 180);
+  tft.setTextColor(WHITE);
   tft.setTextSize(5);
-  tft.println("Hello\nWorld!");
+  tft.setFont(&FreeMonoBold24pt7b);
+  tft.println(wind);
 }
 
