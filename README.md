@@ -17,6 +17,6 @@ _Fix the hardware identifier_
 5. _Or, equivalently, change line 84 to: tft.begin(0x9341);_
 
 
-
+And added enhanced GFX library with fonts from [here](https://github.com/Bodmer/Adafruit_GFX_plus)
 
 
