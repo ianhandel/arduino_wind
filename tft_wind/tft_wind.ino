@@ -20,9 +20,9 @@ String valid = "A";
 String msg = "";
 
 #define BOUNCE 25
-#define WINDPIN 2
-#define WINDPIN_GND 4
-#define DE_PIN 7
+#define WINDPIN 18
+#define WINDPIN_GND 19
+
 const float KNOTS_PER_HZ = 2.17244;
 const float MILLIS_PER_SEC = 1000;
 const float AVERAGE_INTERVALS = 5;
@@ -33,6 +33,7 @@ const int LOOP_DELAY = 250;
 volatile long now = millis();
 volatile float MA_interval = 1000;
 volatile float windspeed = 0;
+volatile int num_old = 0;
 volatile unsigned long speeds[SPEEDS_STORED] = {0};
 volatile long index = 0;
 volatile float gust = 0;
@@ -80,8 +81,6 @@ TouchScreen ts = TouchScreen(XP, YP, XM, YM, 300);
 
 Adafruit_TFTLCD tft(LCD_CS, LCD_CD, LCD_WR, LCD_RD, LCD_RESET);
 
-long wind = 0;
-
 void setup(void) {
   // tft stuff
   tft.reset();
@@ -95,11 +94,12 @@ void setup(void) {
   Serial.begin(4800);
   pinMode(WINDPIN, INPUT_PULLUP);
   pinMode(WINDPIN_GND, OUTPUT);
-  pinMode(DE_PIN, OUTPUT);
   digitalWrite(WINDPIN_GND, LOW);
-  digitalWrite(DE_PIN, HIGH);
   attachInterrupt(digitalPinToInterrupt(WINDPIN), pulse, FALLING);
   now = millis();
+
+  text(88);
+  tft.fillScreen(BLACK);
 }
 
 
@@ -137,9 +137,7 @@ void loop() {
 
   
   // Write something
-  wind = random(0, 99);
-  text(wind);
-  delay(250);
+  text(windspeed);
 
   // Read screen
   TSPoint p = ts.getPoint();
@@ -207,13 +205,25 @@ byte convertToCRC(char *buff) {
 }
 
 
-
-void text(long wind) {
-  tft.fillScreen(BLACK);
-  tft.setCursor(20, 180);
-  tft.setTextColor(WHITE);
+void text(int num) {
+  if (num != num_old) {
+    tft.setCursor(20, 200);
+    if (num_old < 10) {
+      tft.setCursor(160, 200);
+    }
+    tft.setTextSize(5);
+    tft.setFont(&FreeMonoBold24pt7b);
+    tft.setTextColor(BLACK);
+    tft.println(num_old);
+  }
+  tft.setCursor(20, 200);
+  if (num < 10) {
+    tft.setCursor(160, 200);
+    }
   tft.setTextSize(5);
   tft.setFont(&FreeMonoBold24pt7b);
-  tft.println(wind);
+  tft.setTextColor(YELLOW);
+  tft.println(num);
+  num_old = num;
 }
 
