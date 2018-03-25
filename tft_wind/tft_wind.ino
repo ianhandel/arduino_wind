@@ -136,9 +136,11 @@ void loop() {
   write_index %= 4;
 
   
-  // Write something
+  // Write windspeed
   text(windspeed);
 
+
+/*
   // Read screen
   TSPoint p = ts.getPoint();
    if (p.z > MINPRESSURE) {
@@ -150,6 +152,7 @@ void loop() {
   // if sharing pins, you'll need to fix the directions of the touchscreen pins
   pinMode(XM, OUTPUT);
   pinMode(YP, OUTPUT);
+*/
 
 
 
