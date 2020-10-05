@@ -2,11 +2,6 @@
 // Modify write to HEX crc output
 // Remove OLED
 
-
-#include <SPI.h>
-#include <Wire.h>
-
-
 // stuff for NMEA
 const byte buff_len = 90;
 char CRCbuffer[buff_len];
@@ -28,17 +23,11 @@ const float KNOTS_PER_HZ = 2.17244;
 const float MILLIS_PER_SEC = 1000;
 const float AVERAGE_INTERVALS = 5;
 const long NOWIND_TIME = 5;
-const int SPEEDS_STORED = 80;
 const int LOOP_DELAY = 250;
 
 volatile long now = millis();
 volatile float MA_interval = 1000;
 volatile float windspeed = 0;
-volatile unsigned long speeds[SPEEDS_STORED] = {0};
-volatile long index = 0;
-volatile float gust = 0;
-volatile float max_gust = 0;
-volatile int write_index = 0;
 
 void setup() {
   Serial.begin(4800);
@@ -56,19 +45,6 @@ void loop() {
     windspeed = 0;
   }
 
-// store speeds and find gust speed and max gust
-  speeds[index] = windspeed;
-  index = (index + 1) % SPEEDS_STORED;
-  gust = 0;
-  for(int ii = 0; ii < SPEEDS_STORED; ii++){
-    if(speeds[ii] > gust){
-      gust = speeds[ii];
-    }
-  }
-  if(gust > max_gust){
-    max_gust = gust;
-  }
-
   if(write_index++ == 0){
       // build msg
       // $--MWV,x.x,a,x.x,a*hh<CR><LF>
@@ -83,7 +59,6 @@ void loop() {
   }
   write_index %= 4;
 
-  
   delay(LOOP_DELAY);
 }
 
